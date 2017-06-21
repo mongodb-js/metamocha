@@ -1,10 +1,10 @@
-var Mocha = require('mocha'),
-    Suite = Mocha.Suite,
-    Runner = Mocha.Runner,
-    Test = Mocha.Test,
-    fs = require('fs'),
-    path = require('path'),
-    metadata_ui = require('./metadata_ui');
+var Mocha = require('mocha')
+  , Suite = Mocha.Suite
+  , Runner = Mocha.Runner
+  , Test = Mocha.Test
+  , fs = require('fs')
+  , path = require('path')
+  , metadata_ui = require('./metadata_ui');
 
 
 var argv = require('optimist')
