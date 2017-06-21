@@ -4,7 +4,7 @@ var Mocha = require('mocha')
   , Test = Mocha.Test
   , fs = require('fs')
   , path = require('path')
-  , metadata_ui = require('./metadata_ui');
+  , metadata_ui = require('../metadata_ui');
 
 
 var argv = require('optimist')
