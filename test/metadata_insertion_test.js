@@ -3,7 +3,7 @@ const expect = require('chai').expect;
 describe('test-level metadata', () => {
   // Original, no metadata
   // it: string * fn -> fn 
-  it('should not appear on regular "it" tests',() => {
+  it('should not appear on regular "it" tests', () => {
       var test = it('should split on a delimiter', () => {
           const parts = '1,2,3'.split(',');
           expect(parts).to.eql(['1', '2', '3']);
@@ -14,7 +14,7 @@ describe('test-level metadata', () => {
   // Metadata as 2nd parameter
   // they: string * object * fn -> fn
   it('should appear when specified as the 2nd parameter in "they"', () => {
-      var test = they('should split on a delimiter, with metadata as 2nd parameter', 
+      var test = it('should split on a delimiter, with metadata as 2nd parameter', 
         { requires: {topology: 'single'} }, () => {
           const parts = '1,2,3'.split(',');
           expect(parts).to.eql(['1', '2', '3']);
@@ -26,7 +26,7 @@ describe('test-level metadata', () => {
   // Integra-style metadata
   // theys: string * object -> fn
   it('should appear when sending an object with "theys"', () => {
-    var test = theys('should split on a delimiter, with metadata presented Integra-style', {
+    var test = it('should split on a delimiter, with metadata presented Integra-style', {
         metadata: { requires: { topology: [ 'single' ] } },
       
         test: function () {
@@ -73,7 +73,7 @@ shows('suite-level metadata', {
           metadata: { requires: { topology: 'single' } },
 
           tests: function() {
-            test = theys('should split on a delimiter, with suite metadata overwritten', {
+            test = it('should split on a delimiter, with suite metadata overwritten', {
               metadata: { requires: { topology: 'replset' } },
             
               test: function () {
@@ -93,7 +93,7 @@ shows('suite-level metadata', {
           metadata: { requires: { topology: 'single' } },
 
           tests: function() {
-            test = they('should split on a delimiter, with suite metadata overwritten',
+            test = it('should split on a delimiter, with suite metadata overwritten',
               { requires: { topology: 'sharded' } }, function () {
                 const parts = '1,2,3'.split(',');
                 expect(parts).to.eql(['1', '2', '3']);
