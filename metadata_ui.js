@@ -23,18 +23,41 @@ module.exports = Mocha.interfaces['metadata_ui'] =  function (suite) {
     context.run = mocha.options.delay && common.runWithSuite(suite);
 
     // Suite level metadata
-    context.shows = function(title, obj) {
+
+    // Helper function for suite creation
+    var _create = function (opts) {
+      // Parsing the arguments passed in to find out what kind of suite is being made
+      var title, metadata, fn;
+      title = opts.args[0];
+      if (opts.args.length == 2) {
+        if (typeof opts.args[1] === 'object') {
+          metadata = opts.args[1].metadata;
+          fn = opts.args[1].tests;
+        } else if (typeof opts.args[1] === 'function') {
+          fn = opts.args[1];
+        }
+      } else if (opts.args.length == 3) { // Metadata as a param: it(title, meta, fn)
+        metadata = opts.args[1];
+        fn = opts.args[2];
+      }
+
+      // Creating the Suite object
       var suite = Suite.create(suites[0], title);
-      suite.pending = Boolean(obj.pending);
+      suite.pending = Boolean(opts.pending);
       suite.file = file;
       suites.unshift(suite);
-      suite.metadata = obj.metadata || {};
-      if (typeof obj.tests === 'function') {
-        obj.tests.call(suite);
+      if (opts.isOnly) {
+        suite.parent._onlySuites = suite.parent._onlySuites.concat(suite);
+        mocha.options.hasOnly = true;
+      }
+      suite.metadata = metadata || {};
+      if (typeof fn === 'function') {
+        fn.call(suite);
         suites.shift();
-      } else if (typeof obj.tests === 'undefined' && !suite.pending) {
+      } else if (typeof fn === 'undefined' && !suite.pending) {
         throw new Error('Suite "' + suite.fullTitle() + '" was defined but no callback was supplied. Supply a callback or explicitly skip the suite.');
       }
+
       return suite;
     }
 
@@ -44,12 +67,9 @@ module.exports = Mocha.interfaces['metadata_ui'] =  function (suite) {
      * and/or tests.
      */
 
-    context.describe = context.context = function (title, fn) {
-      
-      return common.suite.create({
-        title: title,
-        file: file,
-        fn: fn
+    context.describe = context.context = function () {
+      return _create({
+        args: arguments
       });
     };
 
@@ -58,10 +78,9 @@ module.exports = Mocha.interfaces['metadata_ui'] =  function (suite) {
      */
 
     context.xdescribe = context.xcontext = context.describe.skip = function (title, fn) {
-      return common.suite.skip({
-        title: title,
-        file: file,
-        fn: fn
+      return _create({
+        args: arguments,
+        pending: true
       });
     };
 
@@ -70,10 +89,9 @@ module.exports = Mocha.interfaces['metadata_ui'] =  function (suite) {
      */
 
     context.describe.only = function (title, fn) {
-      return common.suite.only({
-        title: title,
-        file: file,
-        fn: fn
+      return _create({
+        args: arguments,
+        isOnly: true
       });
     };
 

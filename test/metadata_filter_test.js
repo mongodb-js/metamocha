@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-shows('1=1', {
+describe('1=1', {
   metadata: {a: 1},
 
   tests: function() {
@@ -10,7 +10,7 @@ shows('1=1', {
   }
 });
 
-shows('1=2', {
+describe('1=2', {
   metadata: {a: 2},
 
   tests: function() {
