@@ -21,60 +21,6 @@ module.exports = Mocha.interfaces['metadata_ui'] =  function (suite) {
     context.beforeEach = common.beforeEach;
     context.afterEach = common.afterEach;
     context.run = mocha.options.delay && common.runWithSuite(suite);
-    
-    // Passing in metadata separately 
-    // context.metadata = function(metadata) {
-    //   var suite, comment;
-
-    //   suite = suites[0];
-    //   var metadataTest = new Test('metadata', () => {
-    //     console.dir(metadata, {depth: 5});
-    //   });
-    //   metadataTest.file = file;
-    //   suite.addTest(metadataTest);
-
-    //   return metadataTest;
-    // };
-
-    // Passing in metadata as the 2nd argument
-    context.they = function() {
-      var suite = suites[0];
-      var title, metadata, fn;
-
-      title = arguments[0];
-      if (arguments.length == 2) {
-        fn = arguments[1];
-      } else if (arguments.length == 3) {
-        metadata = arguments[1];
-        fn = arguments[2];
-      }
-
-      if (suite.isPending()) {
-        fn = null;
-      }
-      var test = new Test(title, fn);
-      test.metadata = metadata || suite.metadata || {};
-      test.file = file;
-      suite.addTest(test);
-      return test;
-    };
-
-    // Passing in an object containing the metadata and the test function
-    context.theys = function(title, obj) {
-      var suite = suites[0];
-      var metadata = obj.metadata;
-      var fn = obj.test;
-
-      if (suite.isPending()) {
-        fn = null;
-      }
-
-      var test = new Test(title, fn);
-      test.metadata = metadata || suite.metadata || {};
-      test.file = file;
-      suite.addTest(test);
-      return test;
-    };
 
     // Suite level metadata
     context.shows = function(title, obj) {
@@ -137,7 +83,22 @@ module.exports = Mocha.interfaces['metadata_ui'] =  function (suite) {
      * acting as a thunk.
      */
 
-    context.it = context.specify = function (title, fn) {
+    context.it = context.specify = function () {
+      var title, metadata, fn;
+
+      title = arguments[0];
+      if (arguments.length == 2) {
+        if (typeof arguments[1] === 'object') {
+          metadata = arguments[1].metadata;
+          fn = arguments[1].test;
+        } else if (typeof arguments[1] === 'function') {
+          fn = arguments[1];
+        }
+      } else if (arguments.length == 3) { // Metadata as a param: it(title, meta, fn)
+        metadata = arguments[1];
+        fn = arguments[2];
+      }
+
       var suite = suites[0];
       if (suite.isPending()) {
         fn = null;
@@ -145,9 +106,7 @@ module.exports = Mocha.interfaces['metadata_ui'] =  function (suite) {
       var test = new Test(title, fn);
       test.file = file;
       suite.addTest(test);
-      if (suite.metadata) {
-        test.metadata = test.parent.metadata;
-      }
+      test.metadata = metadata || suite.metadata;
       return test;
     };
 
