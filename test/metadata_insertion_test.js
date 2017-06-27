@@ -13,7 +13,7 @@ describe('test-level metadata', () => {
 
   // Metadata as 2nd parameter
   // they: string * object * fn -> fn
-  it('should appear when specified as the 2nd parameter in "they"', () => {
+  it('should appear when specified as the 2nd parameter', () => {
       var test = it('should split on a delimiter, with metadata as 2nd parameter', 
         { requires: {topology: 'single'} }, () => {
           const parts = '1,2,3'.split(',');
@@ -25,7 +25,7 @@ describe('test-level metadata', () => {
 
   // Integra-style metadata
   // theys: string * object -> fn
-  it('should appear when sending an object with "theys"', () => {
+  it('should appear when sending an Integra-style object', () => {
     var test = it('should split on a delimiter, with metadata presented Integra-style', {
         metadata: { requires: { topology: [ 'single' ] } },
       
@@ -36,24 +36,17 @@ describe('test-level metadata', () => {
       });
     expect(test.metadata).to.eql({ requires: { topology: [ 'single' ] } });
   })
-
-  // Metadata immediately preceding (might not work?)
-  // metadata({ requires: { topology: [ 'single' ] } })
-  // it('should split on a delimiter',() => {
-  //     const parts = '1,2,3'.split(',');
-  //     expect(parts).to.eql(['1', '2', '3']);
-  // });
 });
 
 // Passing metadata on the suite level
-shows('suite-level metadata', {
+describe('suite-level metadata', {
   metadata: { requires: { topology: 'single' } },
 
   tests: function() {
     it('should appear on tests that don\'t specify their own metadata', () => {
       var test;
       var suite = 
-        shows('metadata suite', {
+        describe('metadata suite', {
           metadata: { requires: { topology: 'single' } },
 
           tests: function() {
@@ -69,7 +62,7 @@ shows('suite-level metadata', {
     it('should get overwritten by test-level metadata (Integra-style)', () => {
       var test;
       var suite = 
-        shows('metadata suite', {
+        describe('metadata suite', {
           metadata: { requires: { topology: 'single' } },
 
           tests: function() {
@@ -89,7 +82,7 @@ shows('suite-level metadata', {
     it('should get overwritten by test-level metadata (second parameter style)', () => {
       var test;
       var suite = 
-        shows('metadata suite', {
+        describe('metadata suite', {
           metadata: { requires: { topology: 'single' } },
 
           tests: function() {
