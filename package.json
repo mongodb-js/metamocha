@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "chai": "^4.0.2",
+    "deep-copy": "^1.2.0",
     "fs": "0.0.1-security",
     "mocha": "^3.4.2",
     "mongodb-core": "^2.1.12",
