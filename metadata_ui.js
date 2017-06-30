@@ -144,10 +144,12 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
       if (testSuite.isPending()) {
         testData.fn = null;
       }
+
+      testData.fn = testData.fn.bind(null, (testData.metadata || testSuite.metadata));
       var test = new Test(testData.title, testData.fn);
+      test.metadata = testData.metadata || testSuite.metadata;
       test.file = file;
       testSuite.addTest(test);
-      test.metadata = testData.metadata || testSuite.metadata;
       return test;
     };
 
