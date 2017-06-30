@@ -102,29 +102,30 @@ module.exports = Mocha.interfaces['metadata_ui'] =  function (suite) {
      */
 
     context.it = context.specify = function () {
-      var title, metadata, fn;
+      var title, metadata, test_fn, fn;
 
       title = arguments[0];
       if (arguments.length == 2) {
         if (typeof arguments[1] === 'object') {
           metadata = arguments[1].metadata;
-          fn = arguments[1].test;
+          test_fn = arguments[1].test;
         } else if (typeof arguments[1] === 'function') {
-          fn = arguments[1];
+          test_fn = arguments[1];
         }
       } else if (arguments.length == 3) { // Metadata as a param: it(title, meta, fn)
         metadata = arguments[1];
-        fn = arguments[2];
+        test_fn = arguments[2];
       }
 
       var suite = suites[0];
       if (suite.isPending()) {
         fn = null;
       }
+      fn = test_fn.bind(null, (metadata || suite.metadata));
       var test = new Test(title, fn);
+      test.metadata = metadata || suite.metadata;
       test.file = file;
       suite.addTest(test);
-      test.metadata = metadata || suite.metadata;
       return test;
     };
 
