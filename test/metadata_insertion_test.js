@@ -59,7 +59,7 @@ describe('suite-level metadata', {
       expect(test.metadata).to.eql({ requires: { topology: 'single' } });
     });
 
-    it('should get overwritten by test-level metadata (Integra-style)', () => {
+    it('should have similar fields overwritten by test-level metadata (Integra-style)', () => {
       var test;
       var suite = 
         describe('metadata suite', {
@@ -67,7 +67,7 @@ describe('suite-level metadata', {
 
           tests: function() {
             test = it('should split on a delimiter, with suite metadata overwritten', {
-              metadata: { requires: { topology: 'replset' } },
+              metadata: { requires: { topology: 'replset', version: '2.5.8' } },
             
               test: function () {
                 const parts = '1,2,3'.split(',');
@@ -76,10 +76,10 @@ describe('suite-level metadata', {
             });
           }
         });
-      expect(test.metadata).to.eql({ requires: { topology: 'replset' } });
+      expect(test.metadata).to.eql({ requires: { topology: 'replset', version: '2.5.8' } });
     });
 
-    it('should get overwritten by test-level metadata (second parameter style)', () => {
+    it('should have similar fields overwritten by test-level metadata (second parameter style)', () => {
       var test;
       var suite = 
         describe('metadata suite', {
@@ -87,13 +87,13 @@ describe('suite-level metadata', {
 
           tests: function() {
             test = it('should split on a delimiter, with suite metadata overwritten',
-              { requires: { topology: 'sharded' } }, function () {
+              { requires: { topology: 'sharded', version: '2.5.8'} }, function () {
                 const parts = '1,2,3'.split(',');
                 expect(parts).to.eql(['1', '2', '3']);
             });
           }
         });
-      expect(test.metadata).to.eql({ requires: { topology: 'sharded' } });
+      expect(test.metadata).to.eql({ requires: { topology: 'sharded', version: '2.5.8' } });
     });
   }
 });

@@ -124,7 +124,11 @@ module.exports = Mocha.interfaces['metadata_ui'] =  function (suite) {
       var test = new Test(title, fn);
       test.file = file;
       suite.addTest(test);
-      test.metadata = metadata || suite.metadata;
+      if (suite.metadata) {
+        test.metadata = Object.assign({}, suite.metadata, metadata);
+      } else {
+        test.metadata = metadata;
+      }
       return test;
     };
 
