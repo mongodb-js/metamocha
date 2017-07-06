@@ -91,3 +91,61 @@ describe('suite-level metadata', {
     });
   }
 });
+
+// Validating input
+describe('tests and suites', () => {
+  it('should error if the first parameter isn\'t a string', () => {
+    let badTest = function() {
+      it(0, () => {
+        const parts = '1,2,3'.split(',');
+        expect(parts).to.eql(['1', '2', '3']);
+      });
+    };
+    let badSuite = function() {
+      describe(0, () => {});
+    };
+    expect(badTest).to.throw();
+    expect(badSuite).to.throw();
+  });
+
+  it('should error if the second parameter isn\'t a function or an object', () => {
+    let badTest = function() {
+      it('should fail', 'no function');
+    };
+    let badSuite = function() {
+      describe('failing suite', 'no function');
+    };
+    expect(badTest).to.throw();
+    expect(badSuite).to.throw();
+  });
+
+  it('should error if, when given a third argument, the second argument isn\'t an object or the third argument isn\'t a function', () => {
+    let firstBadTest = function() {
+      it('should fail once', 'no object', () => {});
+    };
+    let secondBadTest = function() {
+      it('should fail also', { a: 1 }, 'no function');
+    };
+    let firstBadSuite = function() {
+      describe('first failing suite', 'no object', () => {});
+    };
+    let secondBadSuite = function() {
+      describe('second failing suite', { a: 1 }, 'no function');
+    };
+    expect(firstBadTest).to.throw();
+    expect(secondBadTest).to.throw();
+    expect(firstBadSuite).to.throw();
+    expect(secondBadSuite).to.throw();
+  });
+
+  it('should error if more than three arguments are given', () => {
+    let badTest = function() {
+      it('should fail', { a: 1 }, () => {}, 'extra argument');
+    };
+    let badSuite = function() {
+      describe('failing suite', { a: 1 }, () => {}, 'extra argument');
+    };
+    expect(badTest).to.throw();
+    expect(badSuite).to.throw();
+  });
+});

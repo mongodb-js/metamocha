@@ -29,17 +29,38 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
     const _create = function(opts) {
       // Parsing the arguments passed in to find out what kind of suite is being made
       let title, metadata, fn;
+
+      if (opts.args.length < 2) {
+        throw new Error('Not enough arguments passed.');
+      }
+      if (typeof opts.args[0] !== 'string') {
+        throw new Error('First argument of a suite must be a string.');
+      }
       title = opts.args[0];
-      if (opts.args.length === 2) {
+      if (opts.args.length === 2) { // No metadata, describe(title, fn), or metadata as an object, describe(title, obj)
         if (typeof opts.args[1] === 'object') {
-          metadata = opts.args[1].metadata;
-          fn = opts.args[1].tests;
+          if (opts.args[1].metadata && typeof opts.args[1] === 'object'
+            && opts.args[1].tests && typeof opts.args[1].tests === 'function') {
+            metadata = opts.args[1].metadata;
+            fn = opts.args[1].tests;
+          } else {
+            throw new Error('If passing an object as the second parameter, it must be of the form { metadata: <obj>, tests: <fn> }');
+          }
         } else if (typeof opts.args[1] === 'function') {
           fn = opts.args[1];
+        } else {
+          throw new Error('Incorrect suite usage. Must be either "describe(<string>, { <object>, <function> })"" or "describe(<string>, <function)"');
         }
-      } else if (opts.args.length === 3) { // Metadata as a param: it(title, meta, fn)
-        metadata = opts.args[1];
-        fn = opts.args[2];
+      } else if (opts.args.length === 3) { // Metadata as a param: describe(title, meta, fn)
+        if (opts.args[1] && typeof opts.args[1] === 'object'
+          && opts.args[2] && typeof opts.args[2] === 'function') {
+          metadata = opts.args[1];
+          fn = opts.args[2];
+        } else {
+          throw new Error('If passing three parameters, they must be of the form "describe(<string>, <object>, <function>)"');
+        }
+      } else if (opts.args.length > 3) {
+        throw new Error('Too many arguments passed.');
       }
 
       // Creating the Suite object
@@ -105,17 +126,37 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
     context.it = context.specify = function() {
       let title, metadata, fn;
 
+      if (arguments.length < 2) {
+        throw new Error('Not enough arguments passed.');
+      }
+      if (typeof arguments[0] !== 'string') {
+        throw new Error('First argument of a test must be a string.');
+      }
       title = arguments[0];
-      if (arguments.length === 2) {
+      if (arguments.length === 2) { // No metadata, it(title, fn), or metadata as an object, it(title, obj)
         if (typeof arguments[1] === 'object') {
-          metadata = arguments[1].metadata;
-          fn = arguments[1].test;
+          if (arguments[1].metadata && typeof arguments[1] === 'object'
+            && arguments[1].test && typeof arguments[1].test === 'function') {
+            metadata = arguments[1].metadata;
+            fn = arguments[1].test;
+          } else {
+            throw new Error('If passing an object as the second parameter, it must be of the form { metadata: <obj>, tests: <fn> }');
+          }
         } else if (typeof arguments[1] === 'function') {
           fn = arguments[1];
+        } else {
+          throw new Error('Incorrect suite usage. Must be either "it(<string>, { <object>, <function> })"" or "it(<string>, <function)"');
         }
       } else if (arguments.length === 3) { // Metadata as a param: it(title, meta, fn)
-        metadata = arguments[1];
-        fn = arguments[2];
+        if (arguments[1] && typeof arguments[1] === 'object'
+          && arguments[2] && typeof arguments[2] === 'function') {
+          metadata = arguments[1];
+          fn = arguments[2];
+        } else {
+          throw new Error('If passing three parameters, they must be of the form "it(<string>, <object>, <function>)"');
+        }
+      } else if (arguments.length > 3) {
+        throw new Error('Too many arguments passed.');
       }
 
       let testSuite = suites[0];
