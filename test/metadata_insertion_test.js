@@ -63,11 +63,11 @@ describe('suite-level metadata', {
       var test;
       var suite = 
         describe('metadata suite', {
-          metadata: { requires: { topology: 'single' } },
+          metadata: { requires: { topology: 'single', version: '2.5.8' } },
 
           tests: function() {
             test = it('should split on a delimiter, with suite metadata overwritten', {
-              metadata: { requires: { topology: 'replset', version: '2.5.8' } },
+              metadata: { requires: { topology: 'replset' } },
             
               test: function () {
                 const parts = '1,2,3'.split(',');
@@ -83,11 +83,11 @@ describe('suite-level metadata', {
       var test;
       var suite = 
         describe('metadata suite', {
-          metadata: { requires: { topology: 'single' } },
+          metadata: { requires: { topology: 'single', version: '2.5.8' } },
 
           tests: function() {
             test = it('should split on a delimiter, with suite metadata overwritten',
-              { requires: { topology: 'sharded', version: '2.5.8'} }, function () {
+              { requires: { topology: 'sharded'} }, function () {
                 const parts = '1,2,3'.split(',');
                 expect(parts).to.eql(['1', '2', '3']);
             });
