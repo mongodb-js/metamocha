@@ -5,9 +5,7 @@
  */
 var Mocha = require('mocha'),
     Suite = require('mocha/lib/suite'),
-    Test = require('mocha/lib/test'),
-    dmerge = require('deepmerge');
-
+    Test = require('mocha/lib/test');
 /**
  * @param {Suite} suite Root suite.
  */
@@ -166,14 +164,7 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
       var test = new Test(title, fn);
       test.file = file;
       testSuite.addTest(test);
-      if (testSuite.metadata && metadata) {
-        var combinedMetadata = dmerge(testSuite.metadata, metadata);
-        test.metadata = combinedMetadata;
-      } else if (testSuite.metadata && !metadata) {
-        test.metadata = testSuite.metadata;
-      } else {
-        test.metadata = metadata;
-      }
+      test.metadata = metadata || testSuite.metadata;
       return test;
     };
 

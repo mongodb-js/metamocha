@@ -55,10 +55,10 @@ describe('suite-level metadata', {
       expect(test.metadata).to.eql({ requires: { topology: 'single' } });
     });
 
-    it('should have similar fields overwritten by test-level metadata (Integra-style)', () => {
+    it('should be overwritten by test-level metadata (Integra-style)', () => {
       var test;
       describe('metadata suite', {
-        metadata: { requires: { topology: 'single', version: '2.5.8' } },
+        metadata: { requires: { topology: 'single' } },
 
         tests: function() {
           test = it('should split on a delimiter, with suite metadata overwritten', {
@@ -71,13 +71,13 @@ describe('suite-level metadata', {
           });
         }
       });
-      expect(test.metadata).to.eql({ requires: { topology: 'replset', version: '2.5.8' } });
+      expect(test.metadata).to.eql({ requires: { topology: 'replset' } });
     });
 
-    it('should have similar fields overwritten by test-level metadata (second parameter style)', () => {
+    it('should be overwritten by test-level metadata (second parameter style)', () => {
       var test;
       describe('metadata suite', {
-        metadata: { requires: { topology: 'single', version: '2.5.8' } },
+        metadata: { requires: { topology: 'single' } },
 
         tests: function() {
           test = it('should split on a delimiter, with suite metadata overwritten',
@@ -87,7 +87,7 @@ describe('suite-level metadata', {
             });
         }
       });
-      expect(test.metadata).to.eql({ requires: { topology: 'sharded', version: '2.5.8' } });
+      expect(test.metadata).to.eql({ requires: { topology: 'sharded' } });
     });
   }
 });
