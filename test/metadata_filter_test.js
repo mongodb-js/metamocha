@@ -5,7 +5,7 @@ describe('1=1', {
 
   tests: function() {
     it('should equal true', () => {
-       expect(1).to.eql(1);
+      expect(1).to.eql(1);
     });
   }
 });
