@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-let Mocha = require('mocha'),
+var Mocha = require('mocha'),
     Suite = require('mocha/lib/suite'),
     Test = require('mocha/lib/test'),
     dmerge = require('deepmerge');
@@ -12,10 +12,10 @@ let Mocha = require('mocha'),
  * @param {Suite} suite Root suite.
  */
 module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
-  let suites = [suite];
+  var suites = [suite];
 
   suite.on('pre-require', function(context, file, mocha) {
-    const common = require('mocha/lib/interfaces/common')(suites, context, mocha);
+    var common = require('mocha/lib/interfaces/common')(suites, context, mocha);
 
     context.before = common.before;
     context.after = common.after;
@@ -26,9 +26,9 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
     // Suite level metadata
 
     // Helper function for suite creation
-    const _create = function(opts) {
+    var _create = function(opts) {
       // Parsing the arguments passed in to find out what kind of suite is being made
-      let title, metadata, fn;
+      var title, metadata, fn;
 
       if (opts.args.length < 2) {
         throw new Error('Not enough arguments passed.');
@@ -64,7 +64,7 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
       }
 
       // Creating the Suite object
-      let newSuite = Suite.create(suites[0], title);
+      var newSuite = Suite.create(suites[0], title);
       newSuite.pending = Boolean(opts.pending);
       newSuite.file = file;
       suites.unshift(newSuite);
@@ -124,7 +124,7 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
      */
 
     context.it = context.specify = function() {
-      let title, metadata, fn;
+      var title, metadata, fn;
 
       if (arguments.length < 2) {
         throw new Error('Not enough arguments passed.');
@@ -159,15 +159,15 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
         throw new Error('Too many arguments passed.');
       }
 
-      let testSuite = suites[0];
+      var testSuite = suites[0];
       if (testSuite.isPending()) {
         fn = null;
       }
-      let test = new Test(title, fn);
+      var test = new Test(title, fn);
       test.file = file;
       testSuite.addTest(test);
       if (testSuite.metadata && metadata) {
-        let combinedMetadata = dmerge(testSuite.metadata, metadata);
+        var combinedMetadata = dmerge(testSuite.metadata, metadata);
         test.metadata = combinedMetadata;
       } else if (testSuite.metadata && !metadata) {
         test.metadata = testSuite.metadata;
