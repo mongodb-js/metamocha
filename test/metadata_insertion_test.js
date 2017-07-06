@@ -2,7 +2,6 @@ const expect = require('chai').expect;
 
 describe('test-level metadata', () => {
   // Original, no metadata
-  // it: string * fn -> fn 
   it('should not appear on regular "it" tests', () => {
       var test = it('should split on a delimiter', () => {
           const parts = '1,2,3'.split(',');
@@ -12,7 +11,6 @@ describe('test-level metadata', () => {
   });
 
   // Metadata as 2nd parameter
-  // they: string * object * fn -> fn
   it('should appear when specified as the 2nd parameter', () => {
       var test = it('should split on a delimiter, with metadata as 2nd parameter', 
         { requires: {topology: 'single'} }, () => {
@@ -24,7 +22,6 @@ describe('test-level metadata', () => {
 
 
   // Integra-style metadata
-  // theys: string * object -> fn
   it('should appear when sending an Integra-style object', () => {
     var test = it('should split on a delimiter, with metadata presented Integra-style', {
         metadata: { requires: { topology: [ 'single' ] } },
