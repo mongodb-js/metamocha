@@ -11,12 +11,15 @@
   "dependencies": {
     "chai": "^4.0.2",
     "deepmerge": "^1.4.4",
-    "fs": "0.0.1-security",
     "mocha": "^3.4.2",
     "mongodb-core": "^2.1.12",
     "mongodb-topology-manager": "^1.0.13",
     "optimist": "^0.6.1",
     "path": "^0.12.7",
     "recursive-readdir-sync": "^1.0.6"
+  },
+  "devDependencies": {
+    "eslint": "^4.1.1",
+    "eslint-config-google": "^0.8.0"
   }
 }
