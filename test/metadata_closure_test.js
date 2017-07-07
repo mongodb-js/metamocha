@@ -14,6 +14,6 @@ describe('A test', {
       test: function(_metadata) {
         expect(_metadata).to.eql({ a: 2 });
       }
-    })
+    });
   }
 });
