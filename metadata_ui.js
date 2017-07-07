@@ -21,48 +21,56 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
     context.afterEach = common.afterEach;
     context.run = mocha.options.delay && common.runWithSuite(suite);
 
-    // Suite level metadata
-
-    // Helper function for suite creation
-    var _create = function(opts) {
-      // Parsing the arguments passed in to find out what kind of suite is being made
-      var title, metadata, fn;
-
-      if (opts.args.length < 2) {
+    // Parse arguments for describe and it
+    var _parseArgs = function(args) {
+      var testData = {};
+      if (args.length < 2) {
         throw new Error('Not enough arguments passed.');
       }
-      if (typeof opts.args[0] !== 'string') {
-        throw new Error('First argument of a suite must be a string.');
+      if (typeof args[0] !== 'string') {
+        throw new Error('First argument must be a string.');
       }
-      title = opts.args[0];
-      if (opts.args.length === 2) { // No metadata, describe(title, fn), or metadata as an object, describe(title, obj)
-        if (typeof opts.args[1] === 'object') {
-          if (opts.args[1].metadata && typeof opts.args[1] === 'object'
-            && opts.args[1].tests && typeof opts.args[1].tests === 'function') {
-            metadata = opts.args[1].metadata;
-            fn = opts.args[1].tests;
+      testData.title = args[0];
+      if (args.length === 2) { // No metadata, describe(title, fn), or metadata as an object, describe(title, obj)
+        if (typeof args[1] === 'object') {
+          if (args[1].metadata && typeof args[1].metadata === 'object') {
+            testData.metadata = args[1].metadata;
+            if (args[1].tests && typeof args[1].tests === 'function') {
+              testData.fn = args[1].tests;
+            } else if (args[1].test && typeof args[1].test === 'function') {
+              testData.fn = args[1].test;
+            } else {
+              throw new Error('If passing an object as the second parameter, it must be of the form { <object>, <function> }');
+            }
           } else {
-            throw new Error('If passing an object as the second parameter, it must be of the form { metadata: <obj>, tests: <fn> }');
+            throw new Error('If passing an object as the second parameter, it must be of the form { <object>, <function> }');
           }
-        } else if (typeof opts.args[1] === 'function') {
-          fn = opts.args[1];
+        } else if (typeof args[1] === 'function') {
+          testData.fn = args[1];
         } else {
-          throw new Error('Incorrect suite usage. Must be either "describe(<string>, { <object>, <function> })"" or "describe(<string>, <function)"');
+          throw new Error('Incorrect usage. Parameters must be either "<string>, { <object>, <function> }" or "<string>, <function>"');
         }
-      } else if (opts.args.length === 3) { // Metadata as a param: describe(title, meta, fn)
-        if (opts.args[1] && typeof opts.args[1] === 'object'
-          && opts.args[2] && typeof opts.args[2] === 'function') {
-          metadata = opts.args[1];
-          fn = opts.args[2];
+      } else if (args.length === 3) { // Metadata as a param: describe(title, meta, fn)
+        if (args[1] && typeof args[1] === 'object'
+          && args[2] && typeof args[2] === 'function') {
+          testData.metadata = args[1];
+          testData.fn = args[2];
         } else {
-          throw new Error('If passing three parameters, they must be of the form "describe(<string>, <object>, <function>)"');
+          throw new Error('If passing three parameters, they must be of the form "<string>, <object>, <function>"');
         }
-      } else if (opts.args.length > 3) {
+      } else if (args.length > 3) {
         throw new Error('Too many arguments passed.');
       }
 
+      return testData;
+    };
+
+    // Helper function for suite creation
+    var _create = function(opts) {
+      var testData = _parseArgs(opts.args);
+
       // Creating the Suite object
-      var newSuite = Suite.create(suites[0], title);
+      var newSuite = Suite.create(suites[0], testData.title);
       newSuite.pending = Boolean(opts.pending);
       newSuite.file = file;
       suites.unshift(newSuite);
@@ -70,11 +78,11 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
         newSuite.parent._onlySuites = newSuite.parent._onlySuites.concat(newSuite);
         mocha.options.hasOnly = true;
       }
-      newSuite.metadata = metadata || {};
-      if (typeof fn === 'function') {
-        fn.call(newSuite);
+      newSuite.metadata = testData.metadata || {};
+      if (typeof testData.fn === 'function') {
+        testData.fn.call(newSuite);
         suites.shift();
-      } else if (typeof fn === 'undefined' && !newSuite.pending) {
+      } else if (typeof testData.fn === 'undefined' && !newSuite.pending) {
         throw new Error('Suite "' + newSuite.fullTitle() + '" was defined but no callback was supplied. Supply a callback or explicitly skip the suite.');
       }
 
@@ -122,49 +130,16 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
      */
 
     context.it = context.specify = function() {
-      var title, metadata, fn;
-
-      if (arguments.length < 2) {
-        throw new Error('Not enough arguments passed.');
-      }
-      if (typeof arguments[0] !== 'string') {
-        throw new Error('First argument of a test must be a string.');
-      }
-      title = arguments[0];
-      if (arguments.length === 2) { // No metadata, it(title, fn), or metadata as an object, it(title, obj)
-        if (typeof arguments[1] === 'object') {
-          if (arguments[1].metadata && typeof arguments[1] === 'object'
-            && arguments[1].test && typeof arguments[1].test === 'function') {
-            metadata = arguments[1].metadata;
-            fn = arguments[1].test;
-          } else {
-            throw new Error('If passing an object as the second parameter, it must be of the form { metadata: <obj>, tests: <fn> }');
-          }
-        } else if (typeof arguments[1] === 'function') {
-          fn = arguments[1];
-        } else {
-          throw new Error('Incorrect suite usage. Must be either "it(<string>, { <object>, <function> })"" or "it(<string>, <function)"');
-        }
-      } else if (arguments.length === 3) { // Metadata as a param: it(title, meta, fn)
-        if (arguments[1] && typeof arguments[1] === 'object'
-          && arguments[2] && typeof arguments[2] === 'function') {
-          metadata = arguments[1];
-          fn = arguments[2];
-        } else {
-          throw new Error('If passing three parameters, they must be of the form "it(<string>, <object>, <function>)"');
-        }
-      } else if (arguments.length > 3) {
-        throw new Error('Too many arguments passed.');
-      }
+      var testData = _parseArgs(arguments);
 
       var testSuite = suites[0];
       if (testSuite.isPending()) {
-        fn = null;
+        testData.fn = null;
       }
-      var test = new Test(title, fn);
+      var test = new Test(testData.title, testData.fn);
       test.file = file;
       testSuite.addTest(test);
-      test.metadata = metadata || testSuite.metadata;
+      test.metadata = testData.metadata || testSuite.metadata;
       return test;
     };
 
