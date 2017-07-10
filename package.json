@@ -9,11 +9,9 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "mocha": "^3.4.2"
-  },
   "devDependencies": {
     "chai": "^4.0.2",
-    "eslint": "^4.1.1"
+    "eslint": "^4.1.1",
+    "mocha": "^3.4.2"
   }
 }
