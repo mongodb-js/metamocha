@@ -6,8 +6,11 @@
 var Mocha = require('mocha'),
     Suite = require('mocha/lib/suite'),
     Test = require('mocha/lib/test');
+
 /**
- * @param {Suite} suite Root suite.
+ * This UI is identical to the BDD interface, but with the addition of 
+ * allowing tests and suites to contain metadata
+ * https://github.com/mochajs/mocha/blob/master/lib/interfaces/bdd.js 
  */
 module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
   var suites = [suite];
@@ -21,7 +24,9 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
     context.afterEach = common.afterEach;
     context.run = mocha.options.delay && common.runWithSuite(suite);
 
-    // Parse arguments for describe and it
+    /**
+     * Parse arguments for suite and test functions 
+     */ 
     var _parseArgs = function(args) {
       var testData = {};
       if (args.length < 2) {
@@ -65,7 +70,11 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
       return testData;
     };
 
-    // Helper function for suite creation
+    /**
+     * Create new suite that can contain metadata
+     * Adapted from Suite prototype
+     * https://github.com/mochajs/mocha/blob/master/lib/suite.js
+     */
     var _create = function(opts) {
       var testData = _parseArgs(opts.args);
 
@@ -89,12 +98,14 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
       return newSuite;
     };
 
+    // Remaining logic is adaapted from the bdd interface
+    // https://github.com/mochajs/mocha/blob/master/lib/interfaces/bdd.js
+
     /**
      * Describe a "suite" with the given `title`
      * and callback `fn` containing nested suites
      * and/or tests.
      */
-
     context.describe = context.context = function() {
       return _create({
         args: arguments
@@ -104,7 +115,6 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
     /**
      * Pending describe.
      */
-
     context.xdescribe = context.xcontext = context.describe.skip = function(title, fn) {
       return _create({
         args: arguments,
@@ -115,7 +125,6 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
     /**
      * Exclusive suite.
      */
-
     context.describe.only = function(title, fn) {
       return _create({
         args: arguments,
@@ -128,7 +137,6 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
      * with the given `title` and callback `fn`
      * acting as a thunk.
      */
-
     context.it = context.specify = function() {
       var testData = _parseArgs(arguments);
 
@@ -146,7 +154,6 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
     /**
      * Exclusive test-case.
      */
-
     context.it.only = function(title, fn) {
       return common.test.only(mocha, context.it(title, fn));
     };
@@ -154,7 +161,6 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
     /**
      * Pending test case.
      */
-
     context.xit = context.xspecify = context.it.skip = function(title) {
       context.it(title);
     };
