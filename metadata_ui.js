@@ -5,6 +5,7 @@
  */
 var Mocha = require('mocha'),
     Suite = require('mocha/lib/suite'),
+    Context = require('mocha/lib/context'),
     Test = require('mocha/lib/test');
 
 /**
@@ -98,6 +99,22 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
       return newSuite;
     };
 
+    /**
+     * Monkey patch to support our extra context
+     */
+    Context.prototype.runnable = function(runnable) {
+      if (!arguments.length) {
+        return this._runnable;
+      }
+
+      if (runnable && runnable.metadata) {
+        this.metadata = runnable.metadata;
+      }
+
+      this.test = this._runnable = runnable;
+      return this;
+    };
+
     // Remaining logic is adaapted from the bdd interface
     // https://github.com/mochajs/mocha/blob/master/lib/interfaces/bdd.js
 
@@ -144,10 +161,11 @@ module.exports = Mocha.interfaces.metadata_ui =  function(suite) {
       if (testSuite.isPending()) {
         testData.fn = null;
       }
+
       var test = new Test(testData.title, testData.fn);
+      test.metadata = testData.metadata || testSuite.metadata;
       test.file = file;
       testSuite.addTest(test);
-      test.metadata = testData.metadata || testSuite.metadata;
       return test;
     };
 
