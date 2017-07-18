@@ -1,3 +1,4 @@
 'use strict';
 
-exports.metadata_ui = require('./metadata_ui');
+exports.metamocha = require('./lib/metamocha');
+exports.metadata_ui = require('./lib/metadata_ui');
