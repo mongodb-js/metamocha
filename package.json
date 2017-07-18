@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && mocha --require ./metadata_ui.js --ui metadata_ui",
-    "lint": "eslint metadata_ui.js test/*"
+    "test": "npm run lint && mocha --require ./lib/metadata_ui.js --ui metadata_ui",
+    "lint": "eslint lib/* test/*"
   },
   "author": "Marcus Todd",
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.0.2",
     "eslint": "^4.1.1",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "recursive-readdir-sync": "^1.0.6"
   }
 }
