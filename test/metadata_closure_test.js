@@ -5,6 +5,7 @@ describe('A test', {
 
   tests: function() {
     it('should be able to access its own metadata, given by the suite', function() {
+      expect(this.configuration).to.eql({ a: 1 });
       expect(this.metadata).to.eql({ a: 1 });
       expect(this.test.metadata).to.eql({ a: 1 });
     });

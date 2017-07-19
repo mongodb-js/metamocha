@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && mocha --require ./lib/metadata_ui.js --ui metadata_ui",
+    "test": "npm run lint && node test/test_runner.js",
     "lint": "eslint lib/* test/*"
   },
   "author": "Marcus Todd",
