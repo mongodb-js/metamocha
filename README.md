@@ -1,26 +1,50 @@
+
 # metamocha
-Node.js module to add metadata to your Mocha tests
+Metamocha is a test runner based on [Mocha](https://mochajs.org/), which allows you to include metadata with each test and add filters to selectively run certain tests. 
 
 ## Installation
-First, install the module from npm 
+You can install the module from npm 
 ```
 npm install metamocha
 ```
 
-If you're using Mocha in your project programatically, you can include `metamocha` like so:
-```javascript
-var Mocha = require('mocha');
-var metadata_ui = require('metamocha');
-
-var mocha = new Mocha({ ui: 'metadata_ui' });
-
-// Your test running code here
-```
 
 ## Usage
+Here's an example of a test runner that uses `metamocha`. It works in a very similar way to [using Mocha programatically](https://github.com/mochajs/mocha/wiki/Using-mocha-programmatically).
+```javascript
+var Metamocha = require('metamocha');
+
+// Instantiate new Metamocha
+var metamocha = new Metamocha();
+
+// Add files from directory
+metamocha.addFolder('test/');
+
+// Apply a filter
+metamocha.addFilter({
+  filter: function(test) {
+    return test.hasOwnProperty('metadata');
+  }
+});
+
+// Set up test configuration
+
+// Useful in situations where configuration is used to set up 
+// things before the test run and you would like tests to have 
+// reference to this information
+var config = { a: 1 };
+
+// Run
+metamocha.run(config, function(failures) {
+  process.on('exit', function() {
+    process.exit(failures);
+  });
+});
+```
+
 ### Add metadata to your tests
 
-Metamocha implements a custom UI extended from the 'bdd' interface. Metadata, in the form of an object, can be passed to tests themselves in two ways.
+Metadata, in the form of an object, can be passed to tests themselves in two ways.
 ```javascript
 // Standard 'it' test, with no metadata
 it('should have no metadata', () => {
@@ -81,5 +105,22 @@ it('should be able to access its own metadata', {
   test: function() {
     expect(this.metadata).to.eql({ a: 1 });
   }
+});
+```
+
+Configuration is also contained within the `Context` and can be accessed in a very similar .
+```javascript
+// test runner
+var config = { a: 1 };
+
+metamocha.run(config, function(failures) {
+  process.on('exit', function() {
+    process.exit(failures);
+  });
+});
+
+// test file
+it('should be able to access its own configuration' function() {
+  expect(test.configuration).to.eql({ c: 1 })
 });
 ```
