@@ -8,7 +8,7 @@
     "lint": "eslint lib/* test/*"
   },
   "author": "Marcus Todd",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "chai": "^4.0.2",
     "eslint": "^4.1.1",
