@@ -9,10 +9,8 @@ var metamocha = new Metamocha();
 metamocha.addFolder('test/');
 
 // Apply a filter
-metamocha.addFilter({
-  filter: function(test) {
-    return test.hasOwnProperty('metadata');
-  }
+metamocha.addFilter(function(test) {
+  return test.hasOwnProperty('metadata');
 });
 
 // Set up configuration
