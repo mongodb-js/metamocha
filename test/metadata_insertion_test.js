@@ -148,4 +148,45 @@ describe('tests and suites', () => {
     expect(badTest).to.throw();
     expect(badSuite).to.throw();
   });
+
+  it('should not error if skipping', () => {
+    var goodTest = function() {
+      it.skip('should not fail', () => {});
+    };
+    var goodSuite = function() {
+      describe.skip('should not fail', () => {});
+    };
+    expect(goodTest).to.not.throw();
+    expect(goodSuite).to.not.throw();
+  });
+
+  it('should not error if they are alone', () => {
+    var onlyTestWithTwoArgs = function() {
+      it.only('should not fail', { metadata: { a: 1 }, test: function() {} });
+    };
+    var onlyTestWithThreeArgs = function() {
+      it.only('should also not fail', { a: 1 }, () => {});
+    };
+    var onlySuiteWithTwoArgs = function() {
+      describe.only('should not fail', { metadata: { a: 1 }, test: function() {} });
+    };
+    var onlySuiteWithThreeArgs = function() {
+      describe.only('should also not fail', { a: 1 }, () => {});
+    };
+    expect(onlyTestWithTwoArgs).to.not.throw();
+    expect(onlyTestWithThreeArgs).to.not.throw();
+    expect(onlySuiteWithTwoArgs).to.not.throw();
+    expect(onlySuiteWithThreeArgs).to.not.throw();
+  });
+
+  it('should throw an error if they are alone but have incorrect numbers of arguments', () => {
+    var onlyTestWithMultipleArgs = function() {
+      it.only('should fail because there\'s four arguments', { a: 1 }, () => {}, 'extra argument');
+    };
+    var onlySuiteWithOneArg = function() {
+      describe.only('should fail because there\'s only one argument');
+    };
+    expect(onlyTestWithMultipleArgs).to.throw();
+    expect(onlySuiteWithOneArg).to.throw();
+  });
 });
