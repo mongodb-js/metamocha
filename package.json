@@ -5,15 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run lint && node test/test_runner.js",
-    "lint": "eslint lib/* test/*"
+    "lint": "eslint lib test"
   },
   "author": "Marcus Todd",
   "license": "MIT",
   "dependencies": {
-    "mocha": "^3.4.2"
+    "mocha": "^3.5.3"
   },
   "devDependencies": {
-    "chai": "^4.0.2",
-    "eslint": "^4.1.1"
+    "chai": "^4.1.2",
+    "eslint": "^4.7.0"
   }
 }

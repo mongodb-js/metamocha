@@ -6,7 +6,7 @@ var Metamocha = require('../lib/metamocha');
 var metamocha = new Metamocha();
 
 // Add files from directory
-metamocha.addFolder('test/');
+metamocha.lookupFiles('test');
 
 // Apply a filter
 metamocha.addFilter(function(test) {
